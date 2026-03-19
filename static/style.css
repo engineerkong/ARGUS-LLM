@@ -1,0 +1,224 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f0f0f0;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+.app-wrapper {
+  width: 100%;
+  max-width: 680px;
+}
+
+.app-card {
+  background: #fff;
+  border: 1.5px solid #bbb;
+  border-radius: 6px;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Title */
+.app-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: #111;
+}
+
+/* API info row */
+.api-info {
+  font-size: 0.88rem;
+  color: #444;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.inline-input {
+  border: none;
+  border-bottom: 1px solid #aaa;
+  outline: none;
+  font-size: 0.88rem;
+  color: #222;
+  padding: 2px 4px;
+  background: transparent;
+  min-width: 160px;
+  max-width: 240px;
+}
+
+.inline-input:focus { border-bottom-color: #333; }
+
+/* Generic section */
+.section { display: flex; flex-direction: column; gap: 6px; }
+
+/* Prompt textarea */
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid #bbb;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  resize: vertical;
+  outline: none;
+  color: #222;
+  font-family: inherit;
+}
+textarea:focus { border-color: #555; }
+
+/* Row: Functionality + Dataset */
+.row-section {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.functionality-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 130px;
+}
+
+.functionality-box label {
+  font-size: 0.8rem;
+  color: #555;
+  font-weight: 600;
+}
+
+select {
+  padding: 8px 10px;
+  border: 1.5px solid #bbb;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  outline: none;
+  background: #fff;
+  cursor: pointer;
+}
+select:focus { border-color: #555; }
+
+.dataset-box {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+}
+
+.dataset-box input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid #bbb;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  outline: none;
+  color: #222;
+  font-family: inherit;
+}
+.dataset-box input:focus { border-color: #555; }
+
+/* Submit button */
+button#submit-btn {
+  align-self: flex-start;
+  padding: 10px 28px;
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s;
+}
+button#submit-btn:hover { background: #444; }
+button#submit-btn:disabled { background: #888; cursor: not-allowed; }
+
+/* Spinner */
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.hidden { display: none !important; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Collapsible retrieved section */
+.collapsible-section {
+  border: 1.5px solid #bbb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  color: #333;
+  background: #fafafa;
+  user-select: none;
+}
+.collapsible-header:hover { background: #f0f0f0; }
+
+.arrow { font-size: 0.75rem; transition: transform 0.2s; }
+.arrow.open { transform: rotate(180deg); }
+
+.collapsible-body {
+  max-height: 400px;
+  overflow-y: auto;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding: 12px 14px;
+  background: #fff;
+}
+.collapsible-body.collapsed { max-height: 0; padding: 0 14px; overflow: hidden; }
+
+pre {
+  font-size: 0.82rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #333;
+  font-family: monospace;
+}
+
+/* Answer box */
+.answer-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  padding: 8px;
+  border: 1.5px solid #bbb;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  background: #fafafa;
+}
+
+.answer-box {
+  min-height: 100px;
+  border: 1.5px solid #bbb;
+  border-radius: 0 0 4px 4px;
+  padding: 14px;
+  font-size: 0.93rem;
+  color: #222;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.placeholder { color: #aaa; font-style: italic; }
+
+.error-text { color: #c0392b; }

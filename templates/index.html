@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARGUSLLM</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app-wrapper">
+    <div class="app-card">
+
+      <!-- Header -->
+      <h1 class="app-title">ARGUSLLM</h1>
+      <div class="api-info">
+        <span>API endpoint:</span>
+        <input id="ollama-url" class="inline-input" type="text" value="{{ default_endpoint }}" />
+        <span style="margin-left:16px;">Model:</span>
+        <input id="model" class="inline-input" type="text" value="{{ default_model }}" />
+      </div>
+
+      <!-- Prompt -->
+      <div class="section">
+        <textarea id="prompt" rows="5" placeholder="Enter your prompt here..."></textarea>
+      </div>
+
+      <!-- Functionality + Dataset -->
+      <div class="section row-section">
+        <div class="functionality-box">
+          <label for="intent">Functionality</label>
+          <select id="intent">
+            <option value="annotation">annotation</option>
+            <option value="query">query</option>
+            <option value="decision">decision</option>
+          </select>
+        </div>
+        <div class="dataset-box">
+          <input id="dataset-path" type="text" placeholder="Dataset Path / URL (e.g. /data/pilot.gpkg)" />
+        </div>
+      </div>
+
+      <!-- Submit button -->
+      <div class="section">
+        <button id="submit-btn" onclick="submitQuery()">
+          <span id="btn-text">Submit</span>
+          <span id="btn-spinner" class="spinner hidden"></span>
+        </button>
+      </div>
+
+      <!-- Retrieved information (collapsible) -->
+      <div class="section collapsible-section" id="retrieved-section">
+        <div class="collapsible-header" onclick="toggleRetrieved()">
+          <span>retrieved information</span>
+          <span id="retrieved-arrow" class="arrow">&#9660;</span>
+        </div>
+        <div id="retrieved-body" class="collapsible-body collapsed">
+          <pre id="retrieved-content"></pre>
+        </div>
+      </div>
+
+      <!-- ARGUS LLM Answer -->
+      <div class="section">
+        <div class="answer-label">ARGUS LLM Answer</div>
+        <div id="llm-answer" class="answer-box">
+          <span class="placeholder">Your answer will appear here...</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
