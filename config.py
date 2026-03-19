@@ -2,7 +2,7 @@ import os
 
 # LLM Backend configuration - set via env vars
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://host.docker.internal:11434")
-OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "tinyllama")
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "mixtral:7b")
 
 # Pipeline defaults
 TOP_K = 5

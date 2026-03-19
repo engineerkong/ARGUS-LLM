@@ -1,4 +1,5 @@
 import os
+from xml.parsers.expat import model
 from openai import OpenAI
 
 
@@ -10,6 +11,7 @@ class LLMClient:
         self.client = OpenAI(base_url=self.base_url, api_key=self.api_key)
 
     def generate(self, prompt: str, system_prompt: str = "You are a cultural heritage expert. Answer the following questions accurately and concisely, using the retrieved information where relevant.", max_tokens: int = 512, temperature: float = 0.0) -> str:
+        print(f"LLMClient initialized with base_url={self.base_url}, model={self.model}")
         try:
             response = self.client.chat.completions.create(
                 model=self.model,

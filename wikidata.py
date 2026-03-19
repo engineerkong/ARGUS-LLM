@@ -18,8 +18,7 @@ class TermExplanation:
     source: str
 
 class WikidataNativeSearchRetriever:
-    def __init__(self, ollama_url: str = "http://localhost:11434", model: str = "tinyllama"):
-        self.ollama_url = ollama_url
+    def __init__(self, model: str = "mistral:7b"):
         self.model = model
         self.wikidata_url = "https://www.wikidata.org/w/api.php"
         self.sparql_url = "https://query.wikidata.org/sparql"

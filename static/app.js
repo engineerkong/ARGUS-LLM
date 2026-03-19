@@ -9,7 +9,6 @@ async function submitQuery() {
   const prompt = document.getElementById("prompt").value.trim();
   if (!prompt) { alert("Please enter a prompt."); return; }
 
-  const ollama_url = document.getElementById("ollama-url").value.trim();
   const model = document.getElementById("model").value.trim();
   const intent = document.getElementById("intent").value;
   const dataset_path = document.getElementById("dataset-path").value.trim();
@@ -30,7 +29,7 @@ async function submitQuery() {
   retrievedContent.textContent = "";
 
   try {
-    const payload = { query: prompt, intent, ollama_url, model };
+    const payload = { query: prompt, intent, model };
     if (dataset_path) payload.dataset_path = dataset_path;
 
     const res = await fetch("/api/query", {

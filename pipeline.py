@@ -6,7 +6,7 @@ from wikidata import WikidataNativeSearchRetriever
 from gpkg_database import GPKGTableRetriever
 from prompt_templates import build_augmented_prompt
 from llm_client import LLMClient
-from config import INSTRUCTION, TOP_K, INTENT, OLLAMA_URL, OLLAMA_MODEL
+from config import INSTRUCTION, TOP_K, INTENT, OLLAMA_MODEL
 
 
 def _decode_gpkg_binary(data):
@@ -57,13 +57,10 @@ def _process_geometries(retrieved):
 
 
 class RAGPipeline:
-    def __init__(self, ollama_url: str = None, model: str = None, pilot_gpkg: str = None):
-        effective_url = ollama_url or OLLAMA_URL
+    def __init__(self, model: str = None, pilot_gpkg: str = None):
         effective_model = model or OLLAMA_MODEL
-        self.llm = LLMClient(ollama_url=effective_url, model=effective_model)
-        self.external_retriever = WikidataNativeSearchRetriever(
-            ollama_url=effective_url, model=effective_model
-        )
+        self.llm = LLMClient(model=effective_model)
+        self.external_retriever = WikidataNativeSearchRetriever(model=effective_model)
         self.pilot_gpkg = pilot_gpkg
         self.internal_retriever = GPKGTableRetriever(pilot_gpkg) if pilot_gpkg else None
 
