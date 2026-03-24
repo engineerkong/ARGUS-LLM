@@ -1,8 +1,8 @@
 import os
 
 # LLM Backend configuration - set via env vars
-OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://host.docker.internal:11434")
-OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "mixtral:7b")
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "https://ollama.fit.fraunhofer.de/api")
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "mistral:7b")
 
 # Pipeline defaults
 TOP_K = 5

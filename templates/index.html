@@ -3,69 +3,149 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ARGUSLLM</title>
+  <title>ARGUS LLM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <div class="app-wrapper">
-    <div class="app-card">
 
-      <!-- Header -->
-      <h1 class="app-title">ARGUSLLM</h1>
-      <div class="api-info">
-        <span>Model:</span>
-        <input id="model" class="inline-input" type="text" value="{{ default_model }}" />
+  <!-- Top header bar -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-brand">
+        <img src="/static/argus_logo_color.png" alt="ARGUS" class="brand-logo" />
+        <span class="brand-name">ARGUS LLM</span>
       </div>
+    </div>
+  </header>
 
-      <!-- Prompt -->
-      <div class="section">
-        <textarea id="prompt" rows="5" placeholder="Enter your prompt here..."></textarea>
-      </div>
+  <!-- Page body -->
+  <main class="page-main">
+    <div class="container">
 
-      <!-- Functionality + Dataset -->
-      <div class="section row-section">
-        <div class="functionality-box">
-          <label for="intent">Functionality</label>
-          <select id="intent">
-            <option value="annotation">annotation</option>
-            <option value="query">query</option>
-            <option value="decision">decision</option>
-          </select>
-        </div>
-        <div class="dataset-box">
-          <input id="dataset-path" type="text" placeholder="Dataset Path / URL (e.g. /data/pilot.gpkg)" />
-        </div>
-      </div>
+      <!-- Intent tabs -->
+      <div class="tab-row">
 
-      <!-- Submit button -->
-      <div class="section">
-        <button id="submit-btn" onclick="submitQuery()">
-          <span id="btn-text">Submit</span>
-          <span id="btn-spinner" class="spinner hidden"></span>
+        <button class="tab-btn active" data-intent="annotation" onclick="selectTab(this)">
+          <span class="tab-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+          </span>
+          <span class="tab-label">
+            <span class="tab-title">Annotation</span>
+            <span class="tab-sub">Wikidata lookup</span>
+          </span>
         </button>
+
+        <button class="tab-btn" data-intent="query" onclick="selectTab(this)">
+          <span class="tab-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+            </svg>
+          </span>
+          <span class="tab-label">
+            <span class="tab-title">Query</span>
+            <span class="tab-sub">Internal database</span>
+          </span>
+        </button>
+
+        <button class="tab-btn" data-intent="decision" onclick="selectTab(this)">
+          <span class="tab-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+          </span>
+          <span class="tab-label">
+            <span class="tab-title">Decision</span>
+            <span class="tab-sub">Validate actions</span>
+          </span>
+        </button>
+
       </div>
 
-      <!-- Retrieved information (collapsible) -->
-      <div class="section collapsible-section" id="retrieved-section">
-        <div class="collapsible-header" onclick="toggleRetrieved()">
-          <span>retrieved information</span>
-          <span id="retrieved-arrow" class="arrow">&#9660;</span>
+      <!-- Hidden intent value -->
+      <input type="hidden" id="intent" value="annotation" />
+
+      <!-- Configuration card -->
+      <div class="card">
+        <h2 class="card-heading">Query Configuration</h2>
+        <p class="card-desc" id="intent-desc">Provide the most accurate description and unit for a term by identifying its meaning from public knowledge bases.</p>
+
+        <div class="divider"></div>
+
+        <!-- Endpoint + Model info row -->
+        <div class="info-row">
+          <div class="info-item">
+            <span class="field-label">API Endpoint</span>
+            <span class="info-value">{{ ollama_url }}</span>
+          </div>
+          <div class="info-item">
+            <span class="field-label">Model</span>
+            <span class="info-value">{{ default_model }}</span>
+          </div>
         </div>
-        <div id="retrieved-body" class="collapsible-body collapsed">
-          <pre id="retrieved-content"></pre>
+        <!-- Hidden input so JS can still read the model value -->
+        <input type="hidden" id="model" value="{{ default_model }}" />
+
+        <!-- Prompt field -->
+        <div class="field-group">
+          <label class="field-label" for="prompt">Prompt</label>
+          <textarea id="prompt" class="field-textarea" rows="5" placeholder="Enter your prompt here..."></textarea>
+        </div>
+
+        <!-- Dataset path — shown only for query / decision -->
+        <div class="field-group" id="dataset-field" style="display:none">
+          <label class="field-label" for="dataset-path">Dataset Path</label>
+          <div class="input-hint">Path to your .gpkg file mounted under <code>/data/</code></div>
+          <input id="dataset-path" class="field-input" type="text" placeholder="e.g. /data/pilot.gpkg" />
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-row">
+          <button id="submit-btn" onclick="submitQuery()">
+            <span id="btn-text">Submit</span>
+            <span id="btn-spinner" class="spinner hidden"></span>
+          </button>
         </div>
       </div>
 
-      <!-- ARGUS LLM Answer -->
-      <div class="section">
-        <div class="answer-label">ARGUS LLM Answer</div>
-        <div id="llm-answer" class="answer-box">
-          <span class="placeholder">Your answer will appear here...</span>
+      <!-- Results card (hidden until query runs) -->
+      <div class="card" id="results-card" style="display:none">
+
+        <!-- Retrieved information (collapsible) -->
+        <div class="collapsible" id="retrieved-section">
+          <button class="collapsible-toggle" onclick="toggleRetrieved()">
+            <span>Retrieved Information</span>
+            <svg id="retrieved-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div id="retrieved-body" class="collapsible-body collapsed">
+            <pre id="retrieved-content"></pre>
+          </div>
         </div>
+
+        <div class="divider"></div>
+
+        <!-- Answer -->
+        <div class="answer-block">
+          <div class="answer-heading">ARGUS LLM Answer</div>
+          <div id="llm-answer" class="answer-box">
+            <span class="placeholder">Your answer will appear here...</span>
+          </div>
+        </div>
+
       </div>
 
     </div>
-  </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <img src="/static/fraunhofer_fit_logo.png" alt="Fraunhofer FIT" class="footer-logo" />
+  </footer>
 
   <script src="/static/app.js"></script>
 </body>

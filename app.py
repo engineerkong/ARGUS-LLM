@@ -1,10 +1,18 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
+import auth  # ← 引入 auth.py
 import os
 import traceback
-from config import OLLAMA_MODEL
+from config import OLLAMA_MODEL, OLLAMA_URL
 from pipeline import RAGPipeline
 
-app = Flask(__name__, template_folder="templates", static_folder="static")
+
+app = Flask(__name__)
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'change-this-in-production')
+
+# 註冊 Keycloak 路由
+app.add_url_rule('/login', 'login', auth.login)
+app.add_url_rule('/callback', 'callback', auth.callback)
+app.add_url_rule('/logout', 'logout', auth.logout)
 
 # Global pipeline cache keyed by (model, gpkg)
 _pipeline_cache: dict = {}
@@ -19,11 +27,13 @@ def get_pipeline(model: str, pilot_gpkg: str = None) -> RAGPipeline:
 
 
 @app.route("/")
+@auth.login_required  # ← 保護首頁
 def index():
-    return render_template("index.html", default_model=OLLAMA_MODEL)
+    return render_template("index.html", default_model=OLLAMA_MODEL, ollama_url=OLLAMA_URL)
 
 
 @app.route("/api/query", methods=["POST"])
+@auth.login_required  # ← 保護 API
 def api_query():
     try:
         data = request.get_json(force=True)
@@ -59,6 +69,7 @@ def api_query():
 
 
 @app.route("/api/config", methods=["GET"])
+@auth.login_required  # ← 保護 API
 def api_config():
     """Return current server-side defaults for the UI."""
     return jsonify({"model": OLLAMA_MODEL})
@@ -67,4 +78,4 @@ def api_config():
 if __name__ == "__main__":
     host = os.environ.get("WEB_HOST", "0.0.0.0")
     port = int(os.environ.get("WEB_PORT", "5000"))
-    app.run(host=host, port=port, debug=True)
+    app.run(host=host, port=port, debug=False)
